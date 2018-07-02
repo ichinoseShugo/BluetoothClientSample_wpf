@@ -61,12 +61,12 @@ namespace BluetoothClientSample_wpf
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            bluetoothClient.Send();
+            bluetoothClient.send();
         }
 
         private async void ReadButton_Click(object sender, RoutedEventArgs e)
         {
-            bluetoothClient.Read();
+            bluetoothClient.receive();
         }
 
         private void DisconnectButton_Click(object sender, RoutedEventArgs e)
@@ -335,8 +335,4 @@ namespace BluetoothClientSample_wpf
         }
     }
     #endregion
-
-
-
-
 }
