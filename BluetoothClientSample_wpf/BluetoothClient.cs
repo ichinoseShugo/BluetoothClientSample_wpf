@@ -1,27 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Imaging;
-
-
 using Windows.Devices.Bluetooth;
-using Windows.Devices.Enumeration;
-
-using System.Collections.ObjectModel;
-using Windows.UI.Core;
-
-
-using System.ComponentModel;
 using Windows.Devices.Bluetooth.Rfcomm;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
-using Windows.Foundation;
-using System.Windows.Controls;
-
-
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace BluetoothClientSample_wpf
 {
@@ -31,6 +15,7 @@ namespace BluetoothClientSample_wpf
         private RfcommDeviceService ConnectService = null;
         private StreamSocket ConnectSocket = null;
         private BluetoothDevice bluetoothDevice;
+        
         #region Connect   
         public async void Connect(RfcommDeviceDisplay deviceInfoDisp)
         {
@@ -39,7 +24,7 @@ namespace BluetoothClientSample_wpf
             {
                 bluetoothDevice = await BluetoothDevice.FromIdAsync(deviceInfoDisp.Id);
             }
-            catch (Exception ex)
+            catch
             {
                 //rootPage.NotifyUser(ex.Message, NotifyType.ErrorMessage);
                 return;
@@ -95,7 +80,6 @@ namespace BluetoothClientSample_wpf
                 MessageBox.Show("socket接続がおかしい");
             }
         }
-
         #endregion
 
         //接続切断命令
@@ -125,7 +109,7 @@ namespace BluetoothClientSample_wpf
 
         }
 
-        public async void send()
+        public async void Send()
         {
             // There's no need to send a zero length message
             // Make sure that the connection is still up and there is a message to send
@@ -137,11 +121,10 @@ namespace BluetoothClientSample_wpf
                 byte[] bytes = System.Text.Encoding.UTF8.GetBytes(data);
                 //OutputStreamに文字列を送信
                 await ConnectSocket.OutputStream.WriteAsync(bytes.AsBuffer());
-
             }
         }
 
-        public async void receive()
+        public async void Receive()
         {
             try
             {
@@ -155,7 +138,7 @@ namespace BluetoothClientSample_wpf
                     MessageBox.Show("" + str);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 lock (this)
                 {

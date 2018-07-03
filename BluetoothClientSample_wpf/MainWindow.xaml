@@ -4,26 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BluetoothClientSample_wpf"
-        mc:Ignorable="d"
-Title="MainWindow" Height="600" Width="640">
-    <Grid>
-        <Image x:Name="rgbImage" AutomationProperties.Name="rgbImage" Loaded="WindowLoaded" />
-        <Canvas Name="skeletonCanvas"
-                Width="{Binding ElementName=rgbImage, Path=ActualWidth}"
-                Height="{Binding ElementName=rgbImage, Path=ActualHeight}"/>
-
-        <StackPanel >
-            <Button x:Name="EnumerateButton" Margin="40,360,500,0" Click="EnumerateButton_Click" Content="Enumerate"/>
-            <Button x:Name="ConnectButton" Margin="40,20,500,0" IsEnabled="False" Click="ConnectButton_Click" Content="Connect"/>
-            <Button x:Name="ReadButton" Margin="40,20,500,0" IsEnabled="False" Click="ReadButton_Click" Content="Read"/>
-            <Button x:Name="SendButton" Margin="40,20,500,0" IsEnabled="False" Click="SendButton_Click" Content="Send"/>
-            <Button x:Name="DisconnectButton" Margin="40,20,500,0" IsEnabled="False" Click="DisconnectButton_Click" Content="Disconnect"/>
-
-
-        </StackPanel>
-
-
-        <ListView x:Name="resultsListView" ItemsSource="{Binding}" HorizontalAlignment="Left" Height="109" Margin="10,10,0,0" VerticalAlignment="Top" Width="175" SelectionChanged="ResultsListView_SelectionChanged">
+        mc:Ignorable="d" Title="MainWindow" Height="600" Width="640">
+    <StackPanel>
+        <Button x:Name="EnumerateButton" Click="EnumerateButton_Click" Content="Enumerate"/>
+        <Button x:Name="ConnectButton" IsEnabled="False" Click="ConnectButton_Click" Content="Connect"/>
+        <Button x:Name="ReadButton" IsEnabled="False" Click="ReadButton_Click" Content="Read"/>
+        <Button x:Name="SendButton"  IsEnabled="False" Click="SendButton_Click" Content="Send"/>
+        <Button x:Name="DisconnectButton" IsEnabled="False" Click="DisconnectButton_Click" Content="Disconnect"/>
+        <ListView x:Name="resultsListView" ItemsSource="{Binding}" VerticalAlignment="Top" SelectionChanged="ResultsListView_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Id}">
@@ -35,6 +23,6 @@ Title="MainWindow" Height="600" Width="640">
                 </GridView>
             </ListView.View>
         </ListView>
-    </Grid>
+    </StackPanel>
 </Window>
 

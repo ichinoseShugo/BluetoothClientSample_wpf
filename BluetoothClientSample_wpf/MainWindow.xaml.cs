@@ -1,24 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media.Imaging;
-
-
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Enumeration;
-
 using System.Collections.ObjectModel;
-using Windows.UI.Core;
-
-
 using System.ComponentModel;
-using Windows.Devices.Bluetooth.Rfcomm;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
-using Windows.Foundation;
+using System.Windows;
 using System.Windows.Controls;
+using Windows.Devices.Enumeration;
+using Windows.Foundation;
 
 namespace BluetoothClientSample_wpf
 {
@@ -27,46 +13,40 @@ namespace BluetoothClientSample_wpf
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// 通信可能なデバイス一覧
+        /// </summary>
+        public ObservableCollection<RfcommDeviceDisplay> ResultCollection { get; private set; }
+        private DeviceWatcher deviceWatcher;
+        private BluetoothClient bluetoothClient = new BluetoothClient();
+
         public MainWindow()
         {
             InitializeComponent();
             ResultCollection = new ObservableCollection<RfcommDeviceDisplay>();
         }
 
+        //Windowが開くときに呼び出されるイベント
         private void WindowLoaded(object sender, RoutedEventArgs e)
         {
             //viewのリストと変数のリストを紐づける
             resultsListView.DataContext = ResultCollection;
         }
 
-        /// <summary>
-        /// Windowが閉じる時に呼び出されるイベント
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        //Windowが閉じる時に呼び出されるイベント
         private void WindowClosing(object sender, CancelEventArgs e)
         {
 
         }
 
-        //通信可能なデバイス一覧を表示するListViewを操作する変数
-        public ObservableCollection<RfcommDeviceDisplay> ResultCollection
-        {
-            get;
-            private set;
-        }
-
-        private DeviceWatcher deviceWatcher;
-        private BluetoothClient bluetoothClient = new BluetoothClient();
-
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
-            bluetoothClient.send();
+            bluetoothClient.Send();
         }
 
-        private async void ReadButton_Click(object sender, RoutedEventArgs e)
+        private void ReadButton_Click(object sender, RoutedEventArgs e)
         {
-            bluetoothClient.receive();
+            bluetoothClient.Receive();
         }
 
         private void DisconnectButton_Click(object sender, RoutedEventArgs e)
@@ -74,11 +54,6 @@ namespace BluetoothClientSample_wpf
             bluetoothClient.Disconnect();
             ResetMainUI();
         }
-
-
-
-
-
 
         //Bluetooth接続機能に関する部分
         #region Connect   
@@ -258,9 +233,6 @@ namespace BluetoothClientSample_wpf
             deviceWatcher.Start();
         }
         #endregion
-
-
-
     }
 
     //接続先候補のリストを表すクラス
@@ -303,25 +275,11 @@ namespace BluetoothClientSample_wpf
             }
         }
 
-
         public void Update(DeviceInformationUpdate deviceInfoUpdate)
         {
-
             deviceInfo.Update(deviceInfoUpdate);
             OnPropertyChanged("Name");
-            //デバイスサムネ画像はいらないのでコメントアウト
-            //UpdateGlyphBitmapImage();
         }
-        /*
-        private async void UpdateGlyphBitmapImage()
-        {
-            DeviceThumbnail deviceThumbnail = await deviceInfo.GetGlyphThumbnailAsync();
-            BitmapImage glyphBitmapImage = new BitmapImage();
-            glyphBitmapImage.(deviceThumbnail);
-            GlyphBitmapImage = glyphBitmapImage;
-            OnPropertyChanged("GlyphBitmapImage");
-        }
-        */
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -329,7 +287,6 @@ namespace BluetoothClientSample_wpf
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {
-
                 handler(this, new PropertyChangedEventArgs(name));
             }
         }
