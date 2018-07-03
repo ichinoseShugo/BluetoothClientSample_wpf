@@ -112,44 +112,19 @@ namespace BluetoothClientSample_wpf
                 //リストの一覧表示をリセットする
                 ResetMainUI();
             }
-
-        }
-        private void ResetMainUI()
-        {
-            EnumerateButton.Content = "Start";
-            ConnectButton.Visibility = Visibility.Visible;
-            resultsListView.Visibility = Visibility.Visible;
-            resultsListView.IsEnabled = true;
-
-            // Re-set device specific UX
-            //RequestAccessButton.Visibility = Visibility.Collapsed;
-            StopWatcher();
         }
 
         private void SetDeviceWatcherUI()
         {
             // Disable the button while we do async operations so the user can't Run twice.
             EnumerateButton.Content = "Stop";
-            MessageBox.Show("EnumerateStart");
+            //StatusMessage.Text = "Enumerate Start";
             resultsListView.Visibility = Visibility.Visible;
             resultsListView.IsEnabled = true;
-        }
-        private void StopWatcher()
-        {
-            if (null != deviceWatcher)
-            {
-                if ((DeviceWatcherStatus.Started == deviceWatcher.Status ||
-                     DeviceWatcherStatus.EnumerationCompleted == deviceWatcher.Status))
-                {
-                    deviceWatcher.Stop();
-                }
-                deviceWatcher = null;
-            }
         }
 
         private void StartUnpairedDeviceWatcher()
         {
-
             // Request additional properties
             string[] requestedProperties = new string[] { "System.Devices.Aep.DeviceAddress", "System.Devices.Aep.IsConnected" };
 
@@ -167,22 +142,22 @@ namespace BluetoothClientSample_wpf
                      // Make sure device name isn't blank
                      if (deviceInfo.Name != "")
                      {
+                         Console.WriteLine(deviceInfo.Name);
                          ResultCollection.Add(new RfcommDeviceDisplay(deviceInfo));
                      }
                  }
                 ));
             });
+
             //デバイス候補が更新されるたびに呼び出されるイベントハンドラ
             deviceWatcher.Updated += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(async (watcher, deviceInfoUpdate) =>
             {
-
                 await Dispatcher.BeginInvoke(
                 new Action(() => {
                     foreach (RfcommDeviceDisplay rfcommInfoDisp in ResultCollection)
                     {
                         if (rfcommInfoDisp.Id == deviceInfoUpdate.Id)
                         {
-
                             rfcommInfoDisp.Update(deviceInfoUpdate);
                             break;
                         }
@@ -191,8 +166,7 @@ namespace BluetoothClientSample_wpf
                 ));
             });
 
-            /*
-             * デバイス一覧の表示が終了した際に呼び出されるイベントハンドラ（現段階では使用していない）
+             //デバイス一覧の表示が終了した際に呼び出されるイベントハンドラ（現段階では使用していない）
             deviceWatcher.EnumerationCompleted += new TypedEventHandler<DeviceWatcher, Object>(async (watcher, obj) =>
             {
                 await Dispatcher.BeginInvoke(
@@ -201,8 +175,7 @@ namespace BluetoothClientSample_wpf
                 }
                 ));
             });
-            */
-
+            
             //一覧から削除された際に呼び出されるイベントハンドラ
             deviceWatcher.Removed += new TypedEventHandler<DeviceWatcher, DeviceInformationUpdate>(async (watcher, deviceInfoUpdate) =>
             {
@@ -231,6 +204,31 @@ namespace BluetoothClientSample_wpf
             });
 
             deviceWatcher.Start();
+        }
+
+        private void ResetMainUI()
+        {
+            EnumerateButton.Content = "Start";
+            ConnectButton.Visibility = Visibility.Visible;
+            resultsListView.Visibility = Visibility.Visible;
+            resultsListView.IsEnabled = true;
+
+            // Re-set device specific UX
+            //RequestAccessButton.Visibility = Visibility.Collapsed;
+            StopWatcher();
+        }
+
+        private void StopWatcher()
+        {
+            if (null != deviceWatcher)
+            {
+                if ((DeviceWatcherStatus.Started == deviceWatcher.Status ||
+                     DeviceWatcherStatus.EnumerationCompleted == deviceWatcher.Status))
+                {
+                    deviceWatcher.Stop();
+                }
+                deviceWatcher = null;
+            }
         }
         #endregion
     }
@@ -279,7 +277,20 @@ namespace BluetoothClientSample_wpf
         {
             deviceInfo.Update(deviceInfoUpdate);
             OnPropertyChanged("Name");
+            //デバイスサムネ画像はいらないのでコメントアウト
+            //UpdateGlyphBitmapImage();
         }
+
+        /*
+        private async void UpdateGlyphBitmapImage()
+        {
+            DeviceThumbnail deviceThumbnail = await deviceInfo.GetGlyphThumbnailAsync();
+            BitmapImage glyphBitmapImage = new BitmapImage();
+            glyphBitmapImage.(deviceThumbnail);
+            GlyphBitmapImage = glyphBitmapImage;
+            OnPropertyChanged("GlyphBitmapImage");
+         }
+        */
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)

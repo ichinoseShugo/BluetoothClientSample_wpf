@@ -4,14 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BluetoothClientSample_wpf"
-        mc:Ignorable="d" Title="MainWindow" Height="600" Width="640">
+        mc:Ignorable="d" Title="MainWindow" Height="480" Width="640" Loaded="WindowLoaded">
     <StackPanel>
-        <Button x:Name="EnumerateButton" Click="EnumerateButton_Click" Content="Enumerate"/>
+        <Button x:Name="EnumerateButton" Click="EnumerateButton_Click" Content="Enumerate" Margin="0,20,0,0"/>
         <Button x:Name="ConnectButton" IsEnabled="False" Click="ConnectButton_Click" Content="Connect"/>
         <Button x:Name="ReadButton" IsEnabled="False" Click="ReadButton_Click" Content="Read"/>
-        <Button x:Name="SendButton"  IsEnabled="False" Click="SendButton_Click" Content="Send"/>
+        <Button x:Name="SendButton" IsEnabled="False" Click="SendButton_Click" Content="Send"/>
         <Button x:Name="DisconnectButton" IsEnabled="False" Click="DisconnectButton_Click" Content="Disconnect"/>
-        <ListView x:Name="resultsListView" ItemsSource="{Binding}" VerticalAlignment="Top" SelectionChanged="ResultsListView_SelectionChanged">
+        <ListView x:Name="resultsListView" ItemsSource="{Binding}" SelectionChanged="ResultsListView_SelectionChanged" 
+                  HorizontalAlignment="Left" VerticalAlignment="Top" Width="640">
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Path=Id}">
@@ -25,4 +26,3 @@
         </ListView>
     </StackPanel>
 </Window>
-
