@@ -135,7 +135,44 @@ namespace BluetoothClientSample_wpf
                     await ConnectSocket.InputStream.ReadAsync(buffer.AsBuffer(), 120, InputStreamOptions.Partial);
                     //受信したbyteデータを文字列に変換
                     string str = Encoding.GetEncoding("ASCII").GetString(buffer);
-                    MessageBox.Show("" + str);
+                    //MessageBox.Show("" + str);
+                }
+            }
+            catch
+            {
+                lock (this)
+                {
+                    if (ConnectSocket == null)
+                    {
+                        // Do not print anything here -  the user closed the sock
+                    }
+                    else
+                    {
+                        Disconnect();
+                    }
+                }
+            }
+        }
+
+        string now;
+        public async void Start()
+        {
+            try
+            {
+                if (ConnectSocket != null)
+                {
+                    Console.Write(2);
+                    byte[] buffer = new byte[120];
+                    //InputStreamのデータを変数bufferに格納
+                    await ConnectSocket.InputStream.ReadAsync(buffer.AsBuffer(), 120, InputStreamOptions.Partial);
+                    //受信したbyteデータを文字列に変換
+                    string str = Encoding.GetEncoding("ASCII").GetString(buffer);
+                    //MessageBox.Show(str);
+                    //if(str == "ABCDEFG")
+                    //{
+                        now = DateTime.Now.ToString();
+                        Console.WriteLine(now);
+                    //}
                 }
             }
             catch

@@ -43,10 +43,15 @@ namespace BluetoothClientSample_wpf
         {
             bluetoothClient.Send();
         }
-
+        
         private void ReadButton_Click(object sender, RoutedEventArgs e)
         {
+            //Console.WriteLine(1);
             bluetoothClient.Receive();
+            Console.WriteLine(1);
+            bluetoothClient.Send();
+            Console.WriteLine(2);
+            bluetoothClient.Start();
         }
 
         private void DisconnectButton_Click(object sender, RoutedEventArgs e)
