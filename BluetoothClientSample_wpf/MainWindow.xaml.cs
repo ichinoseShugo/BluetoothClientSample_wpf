@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Management;
 using System.Windows;
 using System.Windows.Controls;
 using Windows.Devices.Enumeration;
@@ -20,10 +21,28 @@ namespace BluetoothClientSample_wpf
         private DeviceWatcher deviceWatcher;
         private BluetoothClient bluetoothClient = new BluetoothClient();
 
+        private string GetBluetoothID()
+        {
+            // デバイスマネージャーから情報を取得するためのオブジェクト
+            ManagementObjectSearcher searchSerial = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity");
+
+            // デバイスマネージャーの情報を列挙する
+            foreach (ManagementObject obj in searchSerial.Get())
+            {
+                string devicePass = obj["DeviceID"] as string; // デバイスインスタンスパ
+                if (devicePass.Contains("BLUETOOTH_"))
+                {
+                    return devicePass.Split('_')[1];
+                }
+            }
+            return null;
+        }
+
         public MainWindow()
         {
             InitializeComponent();
             ResultCollection = new ObservableCollection<RfcommDeviceDisplay>();
+            Constants.BLUETOOTH_ID = GetBluetoothID();
         }
 
         //Windowが開くときに呼び出されるイベント

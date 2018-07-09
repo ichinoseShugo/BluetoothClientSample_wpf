@@ -36,6 +36,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\References\System.Management.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\References\System.Runtime.WindowsRuntime.dll</HintPath>
@@ -70,6 +74,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BluetoothClient.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -107,6 +112,8 @@
     <Resource Include="References\System.Runtime.WindowsRuntime.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="References\System.Management.dll" />
+    <Resource Include="References\System.Management.xml" />
     <Content Include="References\System.Runtime.WindowsRuntime.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

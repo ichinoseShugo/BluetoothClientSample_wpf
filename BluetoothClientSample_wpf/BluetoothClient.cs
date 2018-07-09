@@ -34,7 +34,8 @@ namespace BluetoothClientSample_wpf
             // should not be interacted with.
 
             // This should return a list of uncached Bluetooth services (so if the server was not active when paired, it will still be detected by this call
-            Guid RfcommChatServiceUuid = Guid.Parse("17fcf242-f86d-4e35-805e-546ee3040b84");
+            string uuid = "17fcf242-f86d-4e35-805e" + Constants.BLUETOOTH_ID;
+            Guid RfcommChatServiceUuid = Guid.Parse(uuid);
             var rfcommServices = await bluetoothDevice.GetRfcommServicesForIdAsync(
                 RfcommServiceId.FromUuid(RfcommChatServiceUuid), BluetoothCacheMode.Uncached);
 
@@ -118,7 +119,7 @@ namespace BluetoothClientSample_wpf
                 //7文字(7バイト)のデータ
                 string data = "ABCDEFG";
                 //バイトデータの文字コードを変更(androidを想定してUTF8に変更しているが変更の必要があるかどうかは未実験、必要ないかも)
-                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(data);
+                byte[] bytes = Encoding.UTF8.GetBytes(data);
                 //OutputStreamに文字列を送信
                 await ConnectSocket.OutputStream.WriteAsync(bytes.AsBuffer());
             }
