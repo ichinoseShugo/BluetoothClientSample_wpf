@@ -34,7 +34,7 @@ namespace BluetoothClientSample_wpf
             // should not be interacted with.
 
             // This should return a list of uncached Bluetooth services (so if the server was not active when paired, it will still be detected by this call
-            string uuid = "17fcf242-f86d-4e35-805e" + Constants.BLUETOOTH_ID;
+            string uuid = "17fcf242-f86d-4e35-805e-" + Constants.BLUETOOTH_ID;
             Guid RfcommChatServiceUuid = Guid.Parse(uuid);
             var rfcommServices = await bluetoothDevice.GetRfcommServicesForIdAsync(
                 RfcommServiceId.FromUuid(RfcommChatServiceUuid), BluetoothCacheMode.Uncached);
