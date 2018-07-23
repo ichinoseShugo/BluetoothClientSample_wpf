@@ -19,7 +19,6 @@ namespace BluetoothClientSample_wpf
         #region Connect   
         public async void Connect(RfcommDeviceDisplay deviceInfoDisp)
         {
-
             try
             {
                 bluetoothDevice = await BluetoothDevice.FromIdAsync(deviceInfoDisp.Id);
@@ -53,7 +52,7 @@ namespace BluetoothClientSample_wpf
             var attributes = await ConnectService.GetSdpRawAttributesAsync();
             if (!attributes.ContainsKey(SdpServiceNameAttributeId))
             {
-                MessageBox.Show("sdpAttributeがおかしい");
+                Console.WriteLine("sdpAttributeがおかしい");
                 return;
             }
 
@@ -62,7 +61,7 @@ namespace BluetoothClientSample_wpf
             var attributeType = attributeReader.ReadByte();
             if (attributeType != SdpServiceNameAttributeType)
             {
-                MessageBox.Show("sdpNameAttributeがおかしい");
+                Console.WriteLine("sdpNameAttributeがおかしい");
                 return;
             }
             var serviceNameLength = attributeReader.ReadByte();
@@ -78,7 +77,7 @@ namespace BluetoothClientSample_wpf
             }
             catch (Exception ex) when ((uint)ex.HResult == 0x80072740) // WSAEADDRINUSE
             {
-                MessageBox.Show("socket接続がおかしい");
+                Console.WriteLine("socket接続がおかしい");
             }
         }
         #endregion
@@ -91,23 +90,19 @@ namespace BluetoothClientSample_wpf
                 ConnectService.Dispose();
                 ConnectService = null;
             }
-
             if (ConnectSocket.InputStream != null)
             {
                 ConnectSocket.InputStream.Dispose();
             }
-
             if (ConnectSocket.OutputStream != null)
             {
                 ConnectSocket.OutputStream.Dispose();
             }
-
             if (ConnectSocket != null)
             {
                 ConnectSocket.Dispose();
                 ConnectSocket = null;
             }
-
         }
 
         public async void Send()
@@ -136,7 +131,7 @@ namespace BluetoothClientSample_wpf
                     await ConnectSocket.InputStream.ReadAsync(buffer.AsBuffer(), 120, InputStreamOptions.Partial);
                     //受信したbyteデータを文字列に変換
                     string str = Encoding.GetEncoding("ASCII").GetString(buffer);
-                    //MessageBox.Show("" + str);
+                    Console.WriteLine("" + str);
                 }
             }
             catch
@@ -162,18 +157,13 @@ namespace BluetoothClientSample_wpf
             {
                 if (ConnectSocket != null)
                 {
-                    Console.Write(2);
                     byte[] buffer = new byte[120];
                     //InputStreamのデータを変数bufferに格納
                     await ConnectSocket.InputStream.ReadAsync(buffer.AsBuffer(), 120, InputStreamOptions.Partial);
                     //受信したbyteデータを文字列に変換
                     string str = Encoding.GetEncoding("ASCII").GetString(buffer);
-                    //MessageBox.Show(str);
-                    //if(str == "ABCDEFG")
-                    //{
-                        now = DateTime.Now.ToString();
-                        Console.WriteLine(now);
-                    //}
+                    now = DateTime.Now.ToString();
+                    Console.WriteLine(now);
                 }
             }
             catch

@@ -11,7 +11,7 @@
         <Button x:Name="ReadButton" IsEnabled="False" Click="ReadButton_Click" Content="Read"/>
         <Button x:Name="SendButton" IsEnabled="False" Click="SendButton_Click" Content="Send"/>
         <Button x:Name="DisconnectButton" IsEnabled="False" Click="DisconnectButton_Click" Content="Disconnect"/>
-        <ListView x:Name="resultsListView" ItemsSource="{Binding}" SelectionChanged="ResultsListView_SelectionChanged" 
+        <ListView x:Name="ResultsListView" ItemsSource="{Binding}" SelectionChanged="ResultsListView_SelectionChanged" 
                   HorizontalAlignment="Left" VerticalAlignment="Top" Width="640">
             <ListView.View>
                 <GridView>

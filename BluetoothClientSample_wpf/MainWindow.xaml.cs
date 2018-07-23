@@ -14,12 +14,87 @@ namespace BluetoothClientSample_wpf
     /// </summary>
     public partial class MainWindow : Window
     {
-        /// <summary>
-        /// 通信可能なデバイス一覧
-        /// </summary>
+        /// <summary> 通信可能なデバイス一覧 </summary>
         public ObservableCollection<RfcommDeviceDisplay> ResultCollection { get; private set; }
         private DeviceWatcher deviceWatcher;
         private BluetoothClient bluetoothClient = new BluetoothClient();
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            ResultCollection = new ObservableCollection<RfcommDeviceDisplay>();
+            Constants.BLUETOOTH_ID = GetBluetoothID();
+        }
+
+        //Windowが開くときに呼び出されるイベント
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            //viewのリストと変数のリストを紐づける
+            ResultsListView.DataContext = ResultCollection;
+        }
+
+        //Windowが閉じる時に呼び出されるイベント
+        private void WindowClosing(object sender, CancelEventArgs e)
+        {
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            bluetoothClient.Send();
+        }
+        
+        private void ReadButton_Click(object sender, RoutedEventArgs e)
+        {
+            bluetoothClient.Receive();
+            //bluetoothClient.Send();
+            //bluetoothClient.Start();
+        }
+
+        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            bluetoothClient.Disconnect();
+            ResetMainUI();
+        }
+
+        //Bluetooth接続機能に関する部分
+        #region Connect   
+        private void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+            //デバイス一覧からデバイスが選択されているか確認
+            if (ResultsListView.SelectedItem == null)
+            {
+                Console.WriteLine("接続先デバイスが選択されてないよ");
+                return;
+            }
+
+            bluetoothClient.Connect(ResultsListView.SelectedItem as RfcommDeviceDisplay);
+
+            StopWatcher();
+
+            ReadButton.IsEnabled = true;
+            SendButton.IsEnabled = true;
+            DisconnectButton.IsEnabled = true;
+        }
+
+        //接続候補のリストのアイテム選択時に発生するイベントハンドラ
+        private void ResultsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdatePairingButtons();
+        }
+
+        private void UpdatePairingButtons()
+        {
+            RfcommDeviceDisplay deviceDisp = (RfcommDeviceDisplay)ResultsListView.SelectedItem;
+            if (null != deviceDisp)
+            {
+                ConnectButton.IsEnabled = true;
+            }
+            else
+            {
+                ConnectButton.IsEnabled = false;
+            }
+        }
+        #endregion
 
         private string GetBluetoothID()
         {
@@ -37,88 +112,6 @@ namespace BluetoothClientSample_wpf
             }
             return null;
         }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-            ResultCollection = new ObservableCollection<RfcommDeviceDisplay>();
-            Constants.BLUETOOTH_ID = GetBluetoothID();
-        }
-
-        //Windowが開くときに呼び出されるイベント
-        private void WindowLoaded(object sender, RoutedEventArgs e)
-        {
-            //viewのリストと変数のリストを紐づける
-            resultsListView.DataContext = ResultCollection;
-        }
-
-        //Windowが閉じる時に呼び出されるイベント
-        private void WindowClosing(object sender, CancelEventArgs e)
-        {
-
-        }
-
-        private void SendButton_Click(object sender, RoutedEventArgs e)
-        {
-            bluetoothClient.Send();
-        }
-        
-        private void ReadButton_Click(object sender, RoutedEventArgs e)
-        {
-            //Console.WriteLine(1);
-            bluetoothClient.Receive();
-            Console.WriteLine(1);
-            bluetoothClient.Send();
-            Console.WriteLine(2);
-            bluetoothClient.Start();
-        }
-
-        private void DisconnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            bluetoothClient.Disconnect();
-            ResetMainUI();
-        }
-
-        //Bluetooth接続機能に関する部分
-        #region Connect   
-        private void ConnectButton_Click(object sender, RoutedEventArgs e)
-        {
-            //デバイス一覧からデバイスが選択されているか確認
-            if (resultsListView.SelectedItem == null)
-            {
-                MessageBox.Show("接続先デバイスが選択されてないよ");
-                return;
-            }
-
-            bluetoothClient.Connect(resultsListView.SelectedItem as RfcommDeviceDisplay);
-
-            StopWatcher();
-
-            ReadButton.IsEnabled = true;
-            SendButton.IsEnabled = true;
-            DisconnectButton.IsEnabled = true;
-        }
-
-        //接続候補のリストのアイテム選択時に発生するイベントハンドラ
-        private void ResultsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdatePairingButtons();
-        }
-
-        private void UpdatePairingButtons()
-        {
-            RfcommDeviceDisplay deviceDisp = (RfcommDeviceDisplay)resultsListView.SelectedItem;
-
-            if (null != deviceDisp)
-            {
-                ConnectButton.IsEnabled = true;
-            }
-            else
-            {
-                ConnectButton.IsEnabled = false;
-            }
-        }
-        #endregion
 
         //接続可能なデバイス一覧の取得と表示UI操作に関する部分
         #region DeviceWatcher  
@@ -143,8 +136,8 @@ namespace BluetoothClientSample_wpf
             // Disable the button while we do async operations so the user can't Run twice.
             EnumerateButton.Content = "Stop";
             //StatusMessage.Text = "Enumerate Start";
-            resultsListView.Visibility = Visibility.Visible;
-            resultsListView.IsEnabled = true;
+            ResultsListView.Visibility = Visibility.Visible;
+            ResultsListView.IsEnabled = true;
         }
 
         private void StartUnpairedDeviceWatcher()
@@ -234,8 +227,8 @@ namespace BluetoothClientSample_wpf
         {
             EnumerateButton.Content = "Start";
             ConnectButton.Visibility = Visibility.Visible;
-            resultsListView.Visibility = Visibility.Visible;
-            resultsListView.IsEnabled = true;
+            ResultsListView.Visibility = Visibility.Visible;
+            ResultsListView.IsEnabled = true;
 
             // Re-set device specific UX
             //RequestAccessButton.Visibility = Visibility.Collapsed;
@@ -256,75 +249,4 @@ namespace BluetoothClientSample_wpf
         }
         #endregion
     }
-
-    //接続先候補のリストを表すクラス
-    #region DeviceDisplay
-    public class RfcommDeviceDisplay : INotifyPropertyChanged
-    {
-        private DeviceInformation deviceInfo;
-
-        public RfcommDeviceDisplay(DeviceInformation deviceInfoIn)
-        {
-            deviceInfo = deviceInfoIn;
-        }
-
-        public DeviceInformation DeviceInformation
-        {
-            get
-            {
-                return deviceInfo;
-            }
-
-            private set
-            {
-                deviceInfo = value;
-            }
-        }
-
-        public string Id
-        {
-            get
-            {
-                return deviceInfo.Id;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return deviceInfo.Name;
-            }
-        }
-
-        public void Update(DeviceInformationUpdate deviceInfoUpdate)
-        {
-            deviceInfo.Update(deviceInfoUpdate);
-            OnPropertyChanged("Name");
-            //デバイスサムネ画像はいらないのでコメントアウト
-            //UpdateGlyphBitmapImage();
-        }
-
-        /*
-        private async void UpdateGlyphBitmapImage()
-        {
-            DeviceThumbnail deviceThumbnail = await deviceInfo.GetGlyphThumbnailAsync();
-            BitmapImage glyphBitmapImage = new BitmapImage();
-            glyphBitmapImage.(deviceThumbnail);
-            GlyphBitmapImage = glyphBitmapImage;
-            OnPropertyChanged("GlyphBitmapImage");
-         }
-        */
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-    }
-    #endregion
 }
